@@ -1,0 +1,31 @@
+[
+    {
+      "id": "1",
+      "title": "Mathematics 101",
+      "subject": "Mathematics",
+      "year": 2020,
+      "url": "Electrical machines-1 end sem question paper.pdf"
+    },
+    {
+      "id": "2",
+      "title": "Physics 101",
+      "subject": "Physics",
+      "year": 2019,
+      "url": "/Papers/physics-101-2019.pdf"
+    },
+    {
+      "id": "3",
+      "title": "Chemistry 101",
+      "subject": "Chemistry",
+      "year": 2021,
+      "url": "/Papers/chemistry-101-2021.pdf"
+    },
+    {
+      "id": "4",
+      "title": "Biology 101",
+      "subject": "Biology",
+      "year": 2018,
+      "url": "/Papers/biology-101-2018.pdf"
+    }
+  ]
+  
