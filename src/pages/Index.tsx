@@ -92,6 +92,25 @@ const Index = () => {
                     }
                   />
                 ))}
+                <div className="flex justify-center">
+                  {paper.resources.pyqs.map((resource) => (
+                    <a
+                      key={resource.year}
+                      href={
+                        import.meta.env.MODE === "development"
+                          ? `/Papers/${paper.name}/${resource.year}/${resource.file}.pdf`
+                          : `https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/Papers/${encodeURIComponent(paper.name)}/${resource.year}/${resource.file}.pdf`
+                      }
+                      download={`${paper.name}_${resource.year}_${resource.file}.pdf`}
+                    >
+                      <Button className="gap-2">
+                        <Upload className="h-4 w-4" />
+                        Download
+                      </Button>
+                    </a>
+                  ))}
+                </div>
+
               </DialogContent>
             </Dialog>
           ))}
