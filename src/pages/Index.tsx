@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Search, Upload, Book } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PaperViewer from "@/components/PaperViewer";
@@ -23,6 +24,7 @@ type Course = {
 
 
 const Index = () => {
+  const navigate = useNavigate();
   const [papers] = useState<Course[]>(data);
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
@@ -53,7 +55,7 @@ const Index = () => {
             />
           </div>
           <div>
-            <Button className="gap-2" onClick={() => window.location.href = '/upload'}>
+            <Button className="gap-2" onClick={() => navigate("/Upload")}>
               <Upload className="h-4 w-4" />
               Upload Paper
             </Button>
