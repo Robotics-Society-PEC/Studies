@@ -1,31 +1,234 @@
 [
-    {
-      "id": "1",
-      "title": "Mathematics 101",
-      "subject": "Mathematics",
-      "year": 2020,
-      "url": "Electrical machines-1 end sem question paper.pdf"
-    },
-    {
-      "id": "2",
-      "title": "Physics 101",
-      "subject": "Physics",
-      "year": 2019,
-      "url": "/Papers/physics-101-2019.pdf"
-    },
-    {
-      "id": "3",
-      "title": "Chemistry 101",
-      "subject": "Chemistry",
-      "year": 2021,
-      "url": "/Papers/chemistry-101-2021.pdf"
-    },
-    {
-      "id": "4",
-      "title": "Biology 101",
-      "subject": "Biology",
-      "year": 2018,
-      "url": "/Papers/biology-101-2018.pdf"
+  {
+    "name": "Advanced Communication",
+    "course_code": "ECN302",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2021,
+          "file": "End-Term"
+        }
+      ]
     }
-  ]
-  
+  },
+  {
+    "name": "Analog and Digital Communication",
+    "course_code": "EC1351",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2022,
+          "file": "End-Term"
+        },
+        {
+          "year": 2022,
+          "file": "Mid-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Applied Chemistry 1",
+    "course_code": "CH2301",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2023,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Computer Architecture",
+    "course_code": "CSN202",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2021,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Computer Communication Network",
+    "course_code": "EC2212",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2022,
+          "file": "Mid-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Computer Networks",
+    "course_code": "CSN432",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2019,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Control Systems",
+    "course_code": "EC1352",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2022,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Database Management Systems",
+    "course_code": "CSN208",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2022,
+          "file": "Mid-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Digital Design",
+    "course_code": "ECN103",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2016,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Engineering Drawing using CAD Software",
+    "course_code": "ES2302",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2023,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Financial Management",
+    "course_code": "HSM404",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2018,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Introduction to Mechatronics",
+    "course_code": "ES2304",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2024,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Linear Algebra, Differential Calculus, Vector Calculus",
+    "course_code": "MA2302",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2024,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Machine Learning for Data Science",
+    "course_code": "DSC303",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2021,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Python Programming",
+    "course_code": "CSN213",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2019,
+          "file": "Mid-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Soft Computing",
+    "course_code": "CSN403",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2020,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Software Engineering",
+    "course_code": "CSN302",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2021,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Theory of Computation",
+    "course_code": "CSN301",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2021,
+          "file": "End-Term"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Thermodynamics",
+    "course_code": "ESC201",
+    "resources": {
+      "pyqs": [
+        {
+          "year": 2017,
+          "file": "End-Term"
+        }
+      ]
+    }
+  }
+]
