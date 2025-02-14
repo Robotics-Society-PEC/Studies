@@ -52,12 +52,12 @@ const Index = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          {/* <div>
+          <div>
             <Button className="gap-2" onClick={() => window.location.href = '/upload'}>
               <Upload className="h-4 w-4" />
               Upload Paper
             </Button>
-          </div> */}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
