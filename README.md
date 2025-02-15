@@ -1,42 +1,119 @@
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/Robotics-Society-PEC/Studies" alt="GitHub Release">
+  <img src="https://img.shields.io/github/license/Robotics-Society-PEC/Studies" alt="GitHub License">
+  <img src="https://img.shields.io/github/stars/Robotics-Society-PEC/Studies?style=flat" alt="GitHub Repo stars">
+  <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/Robotics-Society-PEC/Studies">
+  <img alt="GitHub forks" src="https://img.shields.io/github/forks/Robotics-Society-PEC/Studies?style=flat">
+  <a href="https://gitpod.io/#https://github.com/Robotics-Society-PEC/Studies.git"><img src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"></a>
+</p>
+
 # Studies
-
-## Fork
-
-> [!NOTE]  
-> This is supposed to be a fork of the [PEC-CSS/PEC-Previous-Year-Papers](https://github.com/PEC-CSS/PEC-Previous-Year-Papers), but the git history was almost too professional to look at so I had to remove it.
-
-### Changes
-
-- Cleaned up The Data
-- Created a Directroy Structure for the Papers
-- Defined a JSON Format for the directory
 
 ## About The Project
 
 PEC Paper is an open source project started to help PEC students find previous year papers in one place, hence helping them to prepare for exams.
 
-> [!CAUTION]
-> Just looking at the papers won't help, you have to read them also
+## How to Upload a Question Paper
 
-## Implementation Idea
+> [!NOTE]  
+> The Upload button on the UI does not work, it is a work in progress, till then use github to upload your question papers.
 
-- To Upload new Papers, there will be a form in which the cource code, Subject name Branch and year will be made. Then the user will have to singin into github using OAuth, the Webpage will:
-  - fork the main repository
-  - upload the paper to the fork, and update the json
-  - then create a pull request in the main repository
-  - the pull request will be merged by the repository owner and then the changes will be live on the website
-- Taking this approach further we can add a Peer-to-Peer database, in which people can volunteer, to have their device being used as a database for this project, the files will be spread across multiple users and will be fetched from the nearest user, in case their is no peer online the pdf will be served from github.
+### Step 1: Fork the Repository
 
-For more details, check the [issue tracker](https://github.com/Robotics-Society-PEC/Studies/issues).
+1. Go to the [Studies Repository](https://github.com/Robotics-Society-PEC/Studies).
+2. Click the **Fork** button at the top-right corner.
+3. This will create a copy of the repository under your GitHub account.
+
+### Step 2: Clone Your Fork
+
+1. Open a terminal and run the following command to clone the repository:
+   ```sh
+   git clone https://github.com/YOUR-USERNAME/Studies.git
+   ```
+2. Navigate to the repository directory:
+   ```sh
+   cd Studies
+   ```
+
+### Step 3: Create a Directory for the Paper
+
+> [!IMPORTANT]  
+> Insure that you follow the following format and only upload `PDF` files, otherwise the request will be declined.
+
+1. Navigate to the `Papers` directory:
+   ```sh
+   cd Papers
+   ```
+2. Create a new directory following this structure:
+   ```
+   Papers/
+   ├── <Course Name>/
+   │   ├── <Year>/
+   │   │   ├── Mid-Term.pdf
+   │   │   ├── End-Term.pdf
+   ```
+3. Add the PDF file inside the respective directory
+
+### Step 4: Update `paper.json`
+
+1. Navigate to the `src/data/` directory:
+   ```sh
+   cd ../../src/data/
+   ```
+2. Open `paper.json` in a text editor.
+3. Add an entry in the following format:
+   ```json
+   {
+      "name": "Computer Communication Network",
+      "course_code": "EC2212",
+      "resources": {
+         "pyqs": [
+            {
+               "year": 2022,
+               "file": "Mid-Term.pdf"
+            }
+         ]
+      }
+   }
+   ```
+4. Save the file.
+
+### Step 5: Commit and Push Changes
+
+1. Stage the changes:
+   ```sh
+   git add Papers/ src/data/paper.json
+   ```
+2. Commit the changes:
+   ```sh
+   git commit -m "Added Computer Communication Network 2022 Mid-Term Paper"
+   ```
+3. Push the changes to your fork:
+   ```sh
+   git push origin main
+   ```
+
+### Step 6: Create a Pull Request
+
+1. Go to your forked repository on GitHub.
+2. Click on **Compare & pull request**.
+3. Provide a meaningful title and description.
+4. Click **Create pull request**.
+
+Your contribution will be reviewed and merged by the repository maintainers!
+
+## Reporting Issues
+
+If you encounter a bug or have a feature request, please report it using the [issue tracker](https://github.com/Robotics-Society-PEC/Studies/issues).
 
 ## Homage to the Original Creators
 
-<a href="https://github.com/PEC-CSS/PEC-Previous-Year-Papers/graphs/contributors">
-  <img src="https://contrib.rocks/image?PEC-CSS/PEC-Previous-Year-Papers" />
-</a>
+> [!NOTE]  
+> This is supposed to be a fork of the [PEC-CSS/PEC-Previous-Year-Papers](https://github.com/PEC-CSS/PEC-Previous-Year-Papers), but I only took Papers from there and Created a new Front End.
+
+<img alt="Original Creators" src="https://contrib.rocks/image?repo=PEC-CSS/PEC-Previous-Year-Papers">
 
 ## Current Contributors
 
-<a href="https://github.com/Robotics-Society-PEC/Studies/graphs/contributors">
-  <img src="https://contrib.rocks/image?Robotics-Society-PEC/Studies" />
-</a>
+<img alt="Current Creators" src="https://contrib.rocks/image?repo=Robotics-Society-PEC/Studies">
