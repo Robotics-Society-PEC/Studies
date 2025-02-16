@@ -94,10 +94,10 @@ const Index = () => {
                     }
                   />
                 ))}
-                <div className="flex justify-center">
+                <div className="flex justify-center gap-4 flex-wrap">
                   {paper.resources.pyqs.map((resource) => (
                     <a
-                      key={resource.year}
+                      key={`${resource.year}-${resource.file}`}
                       href={
                         import.meta.env.MODE === "development"
                           ? `/Papers/${paper.name}/${resource.year}/${resource.file}.pdf`
@@ -107,7 +107,7 @@ const Index = () => {
                     >
                       <Button className="gap-2">
                         <Upload className="h-4 w-4" />
-                        Download
+                        {resource.year} - {resource.file.replace(/-/g, " ")}
                       </Button>
                     </a>
                   ))}
