@@ -39,7 +39,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 302,
       headers: {
-        Location: `http://localhost:8080/upload?access_token=${accessToken}`,
+        Location: `https://pecademic.netlify.app/upload?access_token=${accessToken}`,
       },
     };
   } catch (error) {

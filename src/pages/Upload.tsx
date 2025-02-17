@@ -49,15 +49,15 @@ const Upload = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
         const accessToken = new URLSearchParams(window.location.search).get("access_token");
-    
+
         if (!accessToken) {
             // Redirect the user to GitHub's OAuth authorization page
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23li0s63G562CpnPqH&redirect_uri=http://localhost:5000/callback&scope=repo`;
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23li0s63G562CpnPqH&redirect_uri=https://pecademic.netlify.app/.netlify/functions/callback&scope=repo`;
             return;
         }
-    
+
         // Check if all necessary fields are filled
         if (!file || !courseCode || !courseName || !year) {
             toast({
@@ -67,9 +67,9 @@ const Upload = () => {
             });
             return;
         }
-    
+
         setIsUploading(true);
-    
+
         try {
             // Fork the repo (this part is already done)
             const forkResponse = await fetch('https://api.github.com/repos/Robotics-Society-PEC/Studies/forks', {
@@ -79,19 +79,19 @@ const Upload = () => {
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
-    
+
             if (!forkResponse.ok) {
                 throw new Error('Failed to fork the repository');
             }
-    
+
             const forkData = await forkResponse.json();
             const forkedRepoOwner = forkData.owner.login; // The username of the forked repo
             const forkedRepoName = forkData.name;
-    
+
             // Step 1: Convert the uploaded file to base64 (if it's a PDF)
             const fileContent = await readFileAsBase64(file);
             const encodedContent = fileContent.split(',')[1]; // Remove the base64 prefix
-    
+
             // Step 2: Create a new blob (file) in the forked repository
             const blobResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/blobs`, {
                 method: 'POST',
@@ -104,14 +104,14 @@ const Upload = () => {
                     encoding: 'base64',
                 })
             });
-    
+
             if (!blobResponse.ok) {
                 throw new Error('Failed to create blob');
             }
-    
+
             const blobData = await blobResponse.json();
             const blobSha = blobData.sha;  // Blob SHA to use in the tree
-    
+
             // Step 3: Fetch paper.json file to modify it
             const fileResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/contents/src/data/papers.json`, {
                 headers: {
@@ -119,15 +119,15 @@ const Upload = () => {
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
-    
+
             if (!fileResponse.ok) {
                 throw new Error('Failed to fetch paper.json');
             }
-    
+
             const fileData = await fileResponse.json();
             const fileContentDecoded = atob(fileData.content);  // Decode the base64 content
             let paperData = JSON.parse(fileContentDecoded); // Parse JSON
-    
+
             // Step 4: Check if courseCode exists and append the pyqs field
             let courseExists = false;
             for (const course of paperData) {
@@ -140,7 +140,7 @@ const Upload = () => {
                     break;
                 }
             }
-    
+
             if (!courseExists) {
                 // If the course doesn't exist, add a new entry
                 paperData.push({
@@ -154,10 +154,10 @@ const Upload = () => {
                     }
                 });
             }
-    
+
             // Step 5: Create a new blob with the updated papers.json content
             const updatedContent = JSON.stringify(paperData, null, 2);  // Format the JSON content
-    
+
             const updatedBlobResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/blobs`, {
                 method: 'POST',
                 headers: {
@@ -169,14 +169,14 @@ const Upload = () => {
                     encoding: 'base64',
                 })
             });
-    
+
             if (!updatedBlobResponse.ok) {
                 throw new Error('Failed to create updated blob');
             }
-    
+
             const updatedBlobData = await updatedBlobResponse.json();
             const updatedBlobSha = updatedBlobData.sha;  // Updated blob SHA for the paper.json file
-    
+
             // Step 6: Fetch the latest commit on the main branch to get the parents
             const latestCommitResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/commits/main`, {
                 headers: {
@@ -184,14 +184,14 @@ const Upload = () => {
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
-    
+
             if (!latestCommitResponse.ok) {
                 throw new Error('Failed to fetch latest commit');
             }
-    
+
             const latestCommitData = await latestCommitResponse.json();
             const parentCommitSha = latestCommitData.sha;  // Parent commit SHA
-    
+
             // Step 7: Create a new tree that includes both changes (the papers.json and the PDF blob)
             const treeResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/trees`, {
                 method: 'POST',
@@ -217,14 +217,14 @@ const Upload = () => {
                     ]
                 })
             });
-    
+
             if (!treeResponse.ok) {
                 throw new Error('Failed to create tree');
             }
-    
+
             const treeData = await treeResponse.json();
             const treeSha = treeData.sha;
-    
+
             // Step 8: Create a new commit that includes both changes
             const commitResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/commits`, {
                 method: 'POST',
@@ -238,14 +238,14 @@ const Upload = () => {
                     parents: [parentCommitSha],  // Correct parent commit SHA
                 })
             });
-    
+
             if (!commitResponse.ok) {
                 throw new Error('Failed to create commit');
             }
-    
+
             const commitData = await commitResponse.json();
             const commitSha = commitData.sha;
-    
+
             // Step 9: Update the reference (branch) to point to the new commit
             const refResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/refs/heads/main`, {
                 method: 'PATCH',
@@ -257,11 +257,11 @@ const Upload = () => {
                     sha: commitSha,  // The SHA of the commit we just created
                 })
             });
-    
+
             if (!refResponse.ok) {
                 throw new Error('Failed to update the reference');
             }
-    
+
             // Step 10: Create the pull request (same as before)
             const prResponse = await fetch('https://api.github.com/repos/Robotics-Society-PEC/Studies/pulls', {
                 method: 'POST',
@@ -276,17 +276,17 @@ const Upload = () => {
                     body: `Added the question paper for ${courseName} (${courseCode}, ${year}).`
                 })
             });
-    
+
             if (!prResponse.ok) {
                 throw new Error('Failed to create the pull request');
             }
-    
+
             const prData = await prResponse.json();
             toast({
                 title: "Success!",
                 description: `Your pull request has been created: ${prData.html_url}`,
             });
-    
+
         } catch (error) {
             toast({
                 title: "Error",
@@ -297,7 +297,7 @@ const Upload = () => {
             setIsUploading(false);
         }
     };
-    
+
 
     // Helper function to read a file as base64
     const readFileAsBase64 = (file: File): Promise<string> => {
