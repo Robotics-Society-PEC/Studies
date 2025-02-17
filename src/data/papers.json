@@ -230,5 +230,17 @@
         }
       ]
     }
+  },
+  {
+    "name": "Datastructure",
+    "course_code": "ece102",
+    "resources": {
+      "pyqs": [
+        {
+          "year": "2025",
+          "file": "End-Term"
+        }
+      ]
+    }
   }
 ]
