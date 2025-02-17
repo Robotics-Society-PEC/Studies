@@ -230,5 +230,17 @@
         }
       ]
     }
+  },
+  {
+    "name": "Datastructure",
+    "course_code": "ECE10111",
+    "resources": {
+      "pyqs": [
+        {
+          "year": "2023",
+          "file": "End-Term"
+        }
+      ]
+    }
   }
 ]
