@@ -24,8 +24,8 @@ jobs:
       - name: Upload static site as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nextjs-artifact
-          path: out
+          name: artifacts
+          path: dist
 
   deploy:
     runs-on: ubuntu-latest
@@ -34,14 +34,14 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: nextjs-artifact
-          path: out
+          name: artifact
+          path: dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out # The folder containing your static files
+          publish_dir: ./dist # The folder containing your static files
           publish_branch: gh-pages # Deploy to the gh-pages branch
           force_orphan: true # Create an orphan branch if it doesn't exist
           # keep_files: true
