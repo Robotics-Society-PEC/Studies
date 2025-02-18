@@ -24,7 +24,7 @@ jobs:
       - name: Upload static site as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts
+          name: artifact
           path: dist
 
   deploy:
