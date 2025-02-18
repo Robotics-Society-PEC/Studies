@@ -18,7 +18,7 @@ export const handler = async (event, context) => {
     const isDevelopment = process.env.NODE_ENV === 'development';
     const redirectUri = isDevelopment
       ? 'http://localhost:8080/upload'
-      : 'https://roboticspec.com/studies/upload';
+      : 'https://roboticspec.com/Studies/Upload';
 
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
