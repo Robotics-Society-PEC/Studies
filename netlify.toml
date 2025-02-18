@@ -1,12 +1,2 @@
 [build]
-  command = "yarn build"
   functions = "netlify/functions"
-  publish = "dist"
-
-[functions]
-  node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200

@@ -14,7 +14,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter >
+      <BrowserRouter basename={(import.meta.env.MODE === "development") ? "/" : "/studies"}>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/upload" element={<Upload />} />
