@@ -8,7 +8,6 @@ import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-const BASE_NAME = import.meta.env.MODE === "development" ? "" : "/Studies";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -17,8 +16,8 @@ const App = () => (
       <Sonner />
       <HashRouter>
         <Routes>
-          <Route path={`${BASE_NAME}/`} element={<Index />} />
-          <Route path={`${BASE_NAME}/Upload`} element={<Upload />} />
+          <Route path={`/`} element={<Index />} />
+          <Route path={`/Upload`} element={<Upload />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
