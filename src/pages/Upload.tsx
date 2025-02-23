@@ -55,12 +55,8 @@ const Upload = () => {
 
         if (!accessToken) {
             // Redirect the user to GitHub's OAuth authorization page
-            const redirectUri = import.meta.env.MODE === 'development'
-                ? 'http://localhost:8888/.netlify/functions/callback'
-                : 'https://pecademic.netlify.app/.netlify/functions/callback';
-
+            const redirectUri = "https://jukbfghyvachwjvwqpxz.supabase.co/functions/v1/callback"; // Supabase deployed function URL
             window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23li0s63G562CpnPqH&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo`;
-
             return;
         }
 
