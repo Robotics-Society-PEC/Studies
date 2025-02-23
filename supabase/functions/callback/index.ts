@@ -22,9 +22,6 @@ serve(async (req) => {
     const CLIENT_SECRET = Deno.env.get("CLIENT_SECRET")!;
     // @ts-ignore
     const REDIRECT_URI = Deno.env.get("REDIRECT_URI")!;
-    console.log("CLIENT_ID:", Deno.env.get("CLIENT_ID"));
-    console.log("CLIENT_SECRET:", Deno.env.get("CLIENT_SECRET"));
-    console.log("REDIRECT_URI:", Deno.env.get("REDIRECT_URI"));
 
     // @ts-ignore
     const redirectUri = "https://roboticspec.com/Studies/Upload";
