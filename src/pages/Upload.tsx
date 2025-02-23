@@ -50,9 +50,17 @@ const Upload = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const getAccessToken = () => {
+            const hash = window.location.hash; // Get the full hash fragment
+            const queryString = hash.split("?")[1]; // Extract query string after "?"
 
-        const accessToken = new URLSearchParams(window.location.search).get("access_token");
+            if (!queryString) return null; // Return null if no query params exist
 
+            const params = new URLSearchParams(queryString);
+            return params.get("access_token");
+        };
+
+        const accessToken = getAccessToken();
         if (!accessToken) {
             // Redirect the user to GitHub's OAuth authorization page
             const redirectUri = "https://jukbfghyvachwjvwqpxz.supabase.co/functions/v1/callback"; // Supabase deployed function URL
