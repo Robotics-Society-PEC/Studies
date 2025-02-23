@@ -5,6 +5,7 @@ import { ChevronLeft, Upload as UploadIcon, Github, AlertCircle, Check, Loader2 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Header from "@/components/ui/GithubHeader";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -319,6 +320,7 @@ const Upload = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <Header />
             <div className="max-w-2xl mx-auto px-4 py-8">
                 <Button
                     variant="ghost"
