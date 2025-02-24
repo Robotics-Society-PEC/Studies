@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Upload, Book } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PaperViewer from "@/components/PaperViewer";
 import { useToast } from "@/hooks/use-toast";
-import data from "@/data/papers.json";
 import Header from "@/components/ui/GithubHeader";
 
 type CourseResource = {
@@ -23,16 +21,41 @@ type Course = {
   };
 };
 
+const GITHUB_JSON_URL =
+  "https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/src/data/papers.json";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [papers] = useState<Course[]>(data);
-  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const [papers, setPapers] = useState<Course[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredPapers = papers.filter(paper =>
-    paper.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    paper.course_code.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        const response = await fetch(GITHUB_JSON_URL);
+        if (!response.ok) throw new Error("Failed to fetch papers.json");
+        const data = await response.json();
+        setPapers(data);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load question papers.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+
+  const filteredPapers = papers.filter(
+    (paper) =>
+      paper.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      paper.course_code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -64,62 +87,55 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPapers.map((paper) => (
-            <Dialog key={paper.course_code}>
-              <DialogTrigger asChild>
-                <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-gray-100">
-                  <div className="flex items-center gap-4 mb-4">
-                    <Book className="h-8 w-8 text-blue-500" />
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{paper.name}</h3>
-                      <p className="text-sm text-gray-500">{paper.course_code}</p>
+        {loading ? (
+          <div className="text-center text-gray-500">Loading papers...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPapers.map((paper) => (
+              <Dialog key={paper.course_code}>
+                <DialogTrigger asChild>
+                  <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-gray-100">
+                    <div className="flex items-center gap-4 mb-4">
+                      <Book className="h-8 w-8 text-blue-500" />
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{paper.name}</h3>
+                        <p className="text-sm text-gray-500">{paper.course_code}</p>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <Button variant="ghost" size="sm">View Paper</Button>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    {/* <span className="text-sm text-gray-600">Course Code: {paper.course_code}</span> */}
-                    <Button variant="ghost" size="sm">View Paper</Button>
-                  </div>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl h-[80vh]">
-                <DialogHeader>
-                  <DialogTitle>{paper.name}</DialogTitle>
-                </DialogHeader>
-                {paper.resources.pyqs.map((resource) => (
-                  <PaperViewer
-                    key={resource.year}
-                    url={
-                      import.meta.env.MODE === "development"
-                        ? `/public/../Papers/${paper.name}/${resource.year}/${resource.file}.pdf`
-                        : `https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/Papers/${encodeURIComponent(paper.name)}/${resource.year}/${resource.file}.pdf`
-                    }
-                  />
-                ))}
-                <div className="flex justify-center gap-4 flex-wrap">
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl h-[80vh]">
+                  <DialogHeader>
+                    <DialogTitle>{paper.name}</DialogTitle>
+                  </DialogHeader>
                   {paper.resources.pyqs.map((resource) => (
-                    <a
-                      key={`${resource.year}-${resource.file}`}
-                      href={
-                        import.meta.env.MODE === "development"
-                          ? `/Papers/${paper.name}/${resource.year}/${resource.file}.pdf`
-                          : `https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/Papers/${encodeURIComponent(paper.name)}/${resource.year}/${resource.file}.pdf`
-                      }
-                      download={`${paper.name}_${resource.year}_${resource.file}.pdf`}
-                    >
-                      <Button className="gap-2">
-                        <Upload className="h-4 w-4" />
-                        {resource.year} - {resource.file.replace(/-/g, " ")}
-                      </Button>
-                    </a>
+                    <PaperViewer
+                      key={resource.year}
+                      url={`https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/Papers/${encodeURIComponent(paper.name)}/${resource.year}/${resource.file}.pdf`}
+                    />
                   ))}
-                </div>
-
-              </DialogContent>
-            </Dialog>
-          ))}
-        </div>
-
+                  <div className="flex justify-center gap-4 flex-wrap">
+                    {paper.resources.pyqs.map((resource) => (
+                      <a
+                        key={`${resource.year}-${resource.file}`}
+                        href={`https://raw.githubusercontent.com/Robotics-Society-PEC/Studies/main/Papers/${encodeURIComponent(paper.name)}/${resource.year}/${resource.file}.pdf`}
+                        download={`${paper.name}_${resource.year}_${resource.file}.pdf`}
+                      >
+                        <Button className="gap-2">
+                          <Upload className="h-4 w-4" />
+                          {resource.year} - {resource.file.replace(/-/g, " ")}
+                        </Button>
+                      </a>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
