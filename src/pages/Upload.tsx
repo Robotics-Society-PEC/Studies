@@ -219,7 +219,7 @@ const Upload = () => {
                             sha: updatedBlobSha,
                         },
                         {
-                            path: `Papers/${courseName}/${year}/end-term.pdf`,  // The path to the new file
+                            path: `Papers/${courseName}/${year}/End-Term.pdf`,  // The path to the new file
                             mode: '100644',  // Regular file mode
                             type: 'blob',
                             sha: blobSha,  // Blob SHA for the uploaded PDF
