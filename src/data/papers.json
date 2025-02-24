@@ -230,5 +230,17 @@
         }
       ]
     }
+  },
+  {
+    "name": "Entrepreneurship and Project Management",
+    "course_code": "HS2802",
+    "resources": {
+      "pyqs": [
+        {
+          "year": "2025",
+          "file": "End-Term"
+        }
+      ]
+    }
   }
 ]
