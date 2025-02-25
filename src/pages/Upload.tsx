@@ -5,7 +5,7 @@ import { ChevronLeft, Upload as UploadIcon, Github, AlertCircle, Check, Loader2 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Header from "@/components/ui/GithubHeader";
+import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
