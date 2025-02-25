@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PaperViewer from "@/components/PaperViewer";
 import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/ui/GithubHeader";
+import Header from "@/components/Header";
 
 type CourseResource = {
   year: number;
