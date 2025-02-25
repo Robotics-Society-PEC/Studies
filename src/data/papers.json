@@ -242,5 +242,17 @@
         }
       ]
     }
+  },
+  {
+    "name": "Operating Systems",
+    "course_code": "CS6801",
+    "resources": {
+      "pyqs": [
+        {
+          "year": "2025",
+          "file": "End-Term"
+        }
+      ]
+    }
   }
 ]
