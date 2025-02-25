@@ -1,7 +1,5 @@
 
 <p align="center">
-  <img alt="Deployment" src="https://api.netlify.com/api/v1/badges/52e3482f-a1a3-4cdf-a698-ab2a76f99d3e/deploy-status">
-  <img src="https://img.shields.io/github/v/release/Robotics-Society-PEC/Studies" alt="GitHub Release">
   <img src="https://img.shields.io/github/license/Robotics-Society-PEC/Studies" alt="GitHub License">
   <img src="https://img.shields.io/github/stars/Robotics-Society-PEC/Studies?style=flat" alt="GitHub Repo stars">
   <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/Robotics-Society-PEC/Studies">
