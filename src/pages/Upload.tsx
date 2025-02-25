@@ -1,32 +1,24 @@
-import { useState, useCallback, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
-import { ChevronLeft, Upload as UploadIcon, Github, AlertCircle, Check, Loader2 } from "lucide-react";
+import { ChevronLeft, Upload as UploadIcon, Github, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Upload = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const { toast } = useToast();
+    const { user } = useAuth();
     const [isUploading, setIsUploading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [courseCode, setCourseCode] = useState("");
     const [courseName, setCourseName] = useState("");
     const [year, setYear] = useState("");
-
-    useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');
-
-        if (code) {
-        }
-    }, [location, toast]);
-
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles[0]?.type !== "application/pdf") {
@@ -50,20 +42,9 @@ const Upload = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const getAccessToken = () => {
-            const hash = window.location.hash; // Get the full hash fragment
-            const queryString = hash.split("?")[1]; // Extract query string after "?"
 
-            if (!queryString) return null; // Return null if no query params exist
-
-            const params = new URLSearchParams(queryString);
-            return params.get("access_token");
-        };
-
-        const accessToken = getAccessToken();
-        if (!accessToken) {
-            // Redirect the user to GitHub's OAuth authorization page
-            const redirectUri = "https://jukbfghyvachwjvwqpxz.supabase.co/functions/v1/callback"; // Supabase deployed function URL
+        if (!user?.access_token) {
+            const redirectUri = "https://jukbfghyvachwjvwqpxz.supabase.co/functions/v1/callback";
             window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23li0s63G562CpnPqH&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo`;
             return;
         }
@@ -81,11 +62,11 @@ const Upload = () => {
         setIsUploading(true);
 
         try {
-            // Fork the repo (this part is already done)
+            // Fork the repo
             const forkResponse = await fetch('https://api.github.com/repos/Robotics-Society-PEC/Studies/forks', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
@@ -95,18 +76,18 @@ const Upload = () => {
             }
 
             const forkData = await forkResponse.json();
-            const forkedRepoOwner = forkData.owner.login; // The username of the forked repo
+            const forkedRepoOwner = forkData.owner.login;
             const forkedRepoName = forkData.name;
 
-            // Step 1: Convert the uploaded file to base64 (if it's a PDF)
+            // Step 1: Convert the uploaded file to base64
             const fileContent = await readFileAsBase64(file);
-            const encodedContent = fileContent.split(',')[1]; // Remove the base64 prefix
+            const encodedContent = fileContent.split(',')[1];
 
-            // Step 2: Create a new blob (file) in the forked repository
+            // Step 2: Create a new blob
             const blobResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/blobs`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
@@ -120,12 +101,12 @@ const Upload = () => {
             }
 
             const blobData = await blobResponse.json();
-            const blobSha = blobData.sha;  // Blob SHA to use in the tree
+            const blobSha = blobData.sha;
 
-            // Step 3: Fetch paper.json file to modify it
+            // Step 3: Fetch paper.json file
             const fileResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/contents/src/data/papers.json`, {
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
@@ -135,47 +116,46 @@ const Upload = () => {
             }
 
             const fileData = await fileResponse.json();
-            const fileContentDecoded = atob(fileData.content);  // Decode the base64 content
-            let paperData = JSON.parse(fileContentDecoded); // Parse JSON
+            const fileContentDecoded = atob(fileData.content);
+            let paperData = JSON.parse(fileContentDecoded);
 
-            // Step 4: Check if courseCode exists and append the pyqs field
+            // Step 4: Update papers.json content
             let courseExists = false;
             for (const course of paperData) {
                 if (course.course_code === courseCode) {
                     courseExists = true;
                     course.resources.pyqs.push({
                         year: year,
-                        file: 'End-Term',  // You can modify this if needed
+                        file: 'End-Term',
                     });
                     break;
                 }
             }
 
             if (!courseExists) {
-                // If the course doesn't exist, add a new entry
                 paperData.push({
                     name: courseName,
                     course_code: courseCode,
                     resources: {
                         pyqs: [{
                             year: year,
-                            file: 'End-Term',  // You can modify this if needed
+                            file: 'End-Term',
                         }]
                     }
                 });
             }
 
-            // Step 5: Create a new blob with the updated papers.json content
-            const updatedContent = JSON.stringify(paperData, null, 2);  // Format the JSON content
+            // Step 5: Create updated papers.json blob
+            const updatedContent = JSON.stringify(paperData, null, 2);
 
             const updatedBlobResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/blobs`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
-                    content: btoa(updatedContent),  // Convert the updated content to base64
+                    content: btoa(updatedContent),
                     encoding: 'base64',
                 })
             });
@@ -185,12 +165,12 @@ const Upload = () => {
             }
 
             const updatedBlobData = await updatedBlobResponse.json();
-            const updatedBlobSha = updatedBlobData.sha;  // Updated blob SHA for the paper.json file
+            const updatedBlobSha = updatedBlobData.sha;
 
-            // Step 6: Fetch the latest commit on the main branch to get the parents
+            // Step 6: Get latest commit
             const latestCommitResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/commits/main`, {
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 }
             });
@@ -200,29 +180,29 @@ const Upload = () => {
             }
 
             const latestCommitData = await latestCommitResponse.json();
-            const parentCommitSha = latestCommitData.sha;  // Parent commit SHA
+            const parentCommitSha = latestCommitData.sha;
 
-            // Step 7: Create a new tree that includes both changes (the papers.json and the PDF blob)
+            // Step 7: Create new tree
             const treeResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/trees`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
-                    base_tree: parentCommitSha,  // Using the latest commit as the base tree
+                    base_tree: parentCommitSha,
                     tree: [
                         {
-                            path: 'src/data/papers.json',  // The path to the file in the repository
-                            mode: '100644',  // Regular file mode
+                            path: 'src/data/papers.json',
+                            mode: '100644',
                             type: 'blob',
                             sha: updatedBlobSha,
                         },
                         {
-                            path: `Papers/${courseName}/${year}/End-Term.pdf`,  // The path to the new file
-                            mode: '100644',  // Regular file mode
+                            path: `Papers/${courseName}/${year}/End-Term.pdf`,
+                            mode: '100644',
                             type: 'blob',
-                            sha: blobSha,  // Blob SHA for the uploaded PDF
+                            sha: blobSha,
                         }
                     ]
                 })
@@ -235,17 +215,17 @@ const Upload = () => {
             const treeData = await treeResponse.json();
             const treeSha = treeData.sha;
 
-            // Step 8: Create a new commit that includes both changes
+            // Step 8: Create new commit
             const commitResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/commits`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
                     message: `Update papers.json and add End-Term PDF for ${courseCode} (${courseName}, ${year})`,
                     tree: treeSha,
-                    parents: [parentCommitSha],  // Correct parent commit SHA
+                    parents: [parentCommitSha],
                 })
             });
 
@@ -256,15 +236,15 @@ const Upload = () => {
             const commitData = await commitResponse.json();
             const commitSha = commitData.sha;
 
-            // Step 9: Update the reference (branch) to point to the new commit
+            // Step 9: Update branch reference
             const refResponse = await fetch(`https://api.github.com/repos/${forkedRepoOwner}/${forkedRepoName}/git/refs/heads/main`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
-                    sha: commitSha,  // The SHA of the commit we just created
+                    sha: commitSha,
                 })
             });
 
@@ -272,11 +252,11 @@ const Upload = () => {
                 throw new Error('Failed to update the reference');
             }
 
-            // Step 10: Create the pull request (same as before)
+            // Step 10: Create pull request
             const prResponse = await fetch('https://api.github.com/repos/Robotics-Society-PEC/Studies/pulls', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${accessToken}`,
+                    'Authorization': `token ${user.access_token}`,
                     'Accept': 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
@@ -308,19 +288,14 @@ const Upload = () => {
         }
     };
 
-
-    // Helper function to read a file as base64
     const readFileAsBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result as string);
             reader.onerror = reject;
-            reader.readAsDataURL(file); // Read file as data URL (base64)
+            reader.readAsDataURL(file);
         });
     };
-
-
-
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -408,7 +383,7 @@ const Upload = () => {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isUploading || !file}
+                                disabled={isUploading || !file || !user}
                             >
                                 {isUploading ? (
                                     <>
