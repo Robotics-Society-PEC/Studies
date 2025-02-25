@@ -5,8 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
-  const { user } = useAuth();
-
   const handleGithubClick = () => {
     window.open("https://github.com/Robotics-Society-PEC/Studies", "_blank");
   };
@@ -16,12 +14,6 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
           <div className="flex items-center">
-            {user && (
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar_url} alt={user.login} />
-                <AvatarFallback>{user.login?.charAt(0)}</AvatarFallback>
-              </Avatar>
-            )}
           </div>
           <div className="flex items-center gap-4">
             <Button

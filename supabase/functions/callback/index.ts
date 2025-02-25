@@ -25,6 +25,8 @@ serve(async (req) => {
 
     // @ts-ignore
     const redirectUri = "https://roboticspec.com/Studies/#Upload";
+    // Uncomment for debugging
+    // const redirectUri = "http://localhost:8080/";
 
     // Exchange code for an access token
     const tokenResponse = await fetch(
