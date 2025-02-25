@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import Cookies from "js-cookie";
 
 interface AuthContextType {
   user: any | null;
@@ -13,23 +14,48 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+
+  const getAccessToken = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("access_token");
+  };
+
+  const fetchGitHubUser = async (accessToken: string) => {
+    try {
+      const response = await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch user data");
+
+      const userData = await response.json();
+      return {
+        access_token: accessToken,
+        username: userData.login,
+        avatar: userData.avatar_url, // GitHub profile picture
+      };
+    } catch (error) {
+      console.error("GitHub API Error:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    // 1. Extract access_token from URL
-    const urlParams = new URLSearchParams(window.location.hash.substring(1)); // Use hash params
-    const accessToken = urlParams.get("access_token");
-
+    const accessToken = getAccessToken();
     if (accessToken) {
-      const userData = { access_token: accessToken };
-      setUser(userData);
-      localStorage.setItem("github_user", JSON.stringify(userData));
+      fetchGitHubUser(accessToken).then((userData) => {
+        if (userData) {
+          setUser(userData);
+          Cookies.set("github_user", JSON.stringify(userData), { expires: 7, secure: true, sameSite: "Strict" });
+        }
+      });
 
-      // 2. Remove token from URL for security
       window.history.replaceState(null, "", window.location.pathname);
     } else {
-      // 3. Load user from localStorage if available
-      const savedUser = localStorage.getItem("github_user");
+      const savedUser = Cookies.get("github_user");
       if (savedUser) {
         setUser(JSON.parse(savedUser));
       }
@@ -45,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("github_user");
+    Cookies.remove("github_user");
   };
 
   return (

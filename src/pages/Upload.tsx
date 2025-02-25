@@ -43,9 +43,12 @@ const Upload = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!user?.access_token) {
-            const redirectUri = "https://jukbfghyvachwjvwqpxz.supabase.co/functions/v1/callback";
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23li0s63G562CpnPqH&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo`;
+        if (!user) {
+            toast({
+                title: "Not logged in",
+                description: "Please login to upload a paper",
+                variant: "destructive",
+            });
             return;
         }
 
@@ -383,7 +386,7 @@ const Upload = () => {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isUploading || !file || !user}
+                                disabled={isUploading || !file}
                             >
                                 {isUploading ? (
                                     <>
