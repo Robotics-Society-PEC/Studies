@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
 import Cookies from "js-cookie";
 
 interface AuthContextType {
@@ -16,9 +15,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const getAccessToken = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("access_token");
+    const hash = window.location.hash; // Get the full hash fragment
+    const queryString = hash.split("?")[1]; // Extract query string after "?"
+
+    if (!queryString) return null; // Return null if no query params exist
+
+    const params = new URLSearchParams(queryString);
+    return params.get("access_token"); // Get the access_token value
   };
+
 
   const fetchGitHubUser = async (accessToken: string) => {
     try {
